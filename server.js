@@ -75,9 +75,13 @@ app.get("/about", function (req, res){
 
 
 app.get("/employees/add", function (req, res){
-    res.render('addEmployee', {
-        layout: "main.hbs"
-    });
+
+    data_service.getDepartments().then((dept)=>{
+        res.render('addEmployee', {data: dept});
+        }).catch((mesg)=>{
+            res.render('addEmployee', {data: []},{layout: "main.hbs"});
+        })
+        
 });
 
 app.get("/images/add", function (req, res){
@@ -93,21 +97,40 @@ app.get("/departments/add", function (req, res){
     });
 });
 
-app.get("/employee/:value", function (req,res){
-
-    
-    data_service.getEmployeeByNum(req.params.value).then((emp)=>{
-        res.render("employee", { data:emp });
-        }).catch((mesg)=>{
-        res.render("employee",{message: mesg});
-    })
-
+app.get("/employee/:empNum", (req, res) => {
+    // initialize an empty object to store the values
+    let viewData = {};
+    data_service.getEmployeeByNum(req.params.empNum).then((data) => {
+    if (data) {
+    viewData.employee = data; //store employee data in the "viewData" object as "employee"
+    } else {
+    viewData.employee = null; // set employee to null if none were returned
+    }
+    }).catch(() => {
+    viewData.employee = null; // set employee to null if there was an error
+    }).then(data_service.getDepartments)
+    .then((data) => {
+    viewData.departments = data; // store department data in the "viewData" object as "departments"
+    for (let i = 0; i < viewData.departments.length; i++) {
+        if (viewData.departments[i].departmentId == viewData.employee.department) {
+        viewData.departments[i].selected = true;
+        }
+        }
+        }).catch(() => {
+        viewData.departments = []; // set departments to empty if there was an error
+        }).then(() => {
+        if (viewData.employee == null) { // if no employee - return an error
+        res.status(404).send("Employee Not Found");
+        } else {
+        res.render("employee", { viewData: viewData }); // render the "employee" view
+        }
+        });
 });
 
-app.get("/employee/:departmentId", function (req,res){
+app.get("/department/:departmentId", function (req,res){
 
     
-    data_service.getDepartmentById(req.params.value).then((dept)=>{
+    data_service.getDepartmentById(req.params.departmentId).then((dept)=>{
         if(dept == null){res.status(404).send("Department Not Found");}
         res.render("department", { data:dept });
         }).catch((mesg)=>{
@@ -198,6 +221,16 @@ app.get("/images", function (req,res){
     })
 });
 
+app.get("/employees/delete/:empNum", function (req,res){
+
+    data_service.deleteEmployeeByNum(req.params.empNum).then(()=>{
+        res.redirect("/employees");
+    }).catch(()=>{
+        res.status(500).send("Unable to Remove Employee / Employee not found)");
+    })
+
+});
+
 app.get('*', function(req, res){
     var text = 'Error:404 <br/> You are not supposed to be here. <br/> Why are you still here? <br/> If you like this page, then alright, you can stay here.';
     text += '<br/> Or you can go back Home and explore the Website.';
@@ -238,8 +271,8 @@ app.post("/employee/update", (req, res) => {
     data_service.updateEmployee(req.body).then(()=>{
         res.redirect("/employees"); 
     }).catch(()=>{
-        console.log('ERROR');
-    })
+        res.status(500).send("Unable to Update Employee");
+        });
 });
 
 app.post("/departments/add", (req,res) => {
@@ -247,8 +280,8 @@ app.post("/departments/add", (req,res) => {
     data_service.addDepartment(req.body).then(()=>{
         res.redirect("/departments");
     }).catch(()=>{
-        console.log('ERROR');
-    })
+        res.status(500).send("Unable to add Department");
+        });
 
 });
 
@@ -256,10 +289,9 @@ app.post("/department/update", (req, res) => {
     data_service.updateDepartment(req.body).then(()=>{
         res.redirect("/departments"); 
     }).catch(()=>{
-        console.log('ERROR');
-    })
+        res.status(500).send("Unable to Update Department");
+        });
 });
-
 
 // setup http server to listen on HTTP_PORT
 data_service.initialize().then(()=>{

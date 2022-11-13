@@ -103,7 +103,7 @@ function updateEmployee(employeeData){
 
     return new Promise(function (resolve, reject) {
 
-        Employee.create(employeeData, employeeData.employeeNum).then(()=>{
+        Employee.update(employeeData, {where: {employeeNum: employeeData.employeeNum}}).then(()=>{
             resolve();
         }).catch(()=>{
             reject("unable to create employee");
@@ -202,7 +202,7 @@ function updateDepartment(departmentData){
 
     return new Promise(function (resolve, reject) {
 
-        Employee.create(departmentData, departmentData.departmentId).then(()=>{
+        Department.update(departmentData, {where: {departmentId: departmentData.departmentId}}).then(()=>{
             resolve();
         }).catch(()=>{
             reject("unable to update department");
@@ -236,7 +236,7 @@ function getDepartmentById(id){
 
     return new Promise(function (resolve, reject) {
         
-        Department.findAll({where:{departmentId: num}}).then(function(data){ 
+        Department.findAll({where:{departmentId: id}}).then(function(data){ 
             resolve(data[0]);
         }).catch(()=>{
             reject("no results returned");
@@ -245,7 +245,23 @@ function getDepartmentById(id){
     });
 }
 
+function deleteEmployeeByNum(empNum){
 
+    return new Promise(function (resolve, reject) {
+
+        Employee.destroy({
+            where:{employeeNum: empNum}
+        }).then(()=>{
+            resolve();
+        }).catch(()=>{
+            reject("unable to remove");
+        })
+        
+    });
+}
+
+
+exports.deleteEmployeeByNum = deleteEmployeeByNum;
 exports.updateDepartment = updateDepartment;
 exports.addDepartment = addDepartment;
 exports.getDepartmentById = getDepartmentById;

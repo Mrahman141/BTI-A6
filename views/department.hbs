@@ -2,7 +2,7 @@
     <div class="col-md-12">
         <h2>{{data.departmentName}} - Department: {{data.departmentId}}</h2>
         <hr/>
-        <form method="post" action="/departments/update">
+        <form method="post" action="/department/update">
         <input type="hidden" name="departmentId" value={{data.departmentId}}>
         <input class="form-control" type= "text", name= "departmentName", label= "Department Name" value="{{data.departmentName}}" />
             <hr />
