@@ -58,6 +58,7 @@ function initialize (){
         //     reject("unable to sync the database");
         // })
         resolve();
+        // reject("unable to sync the database");
         });
    
 }
