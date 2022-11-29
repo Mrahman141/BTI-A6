@@ -52,13 +52,11 @@ function initialize (){
 
 
     return new Promise(function (resolve, reject) {
-        // sequelize.sync().then(()=>{
-        //     resolve();
-        // }).catch(()=>{
-        //     reject("unable to sync the database");
-        // })
-        resolve();
-        // reject("unable to sync the database");
+        sequelize.sync().then(()=>{
+            resolve();
+        }).catch(()=>{
+            reject("unable to sync the database");
+        })
         });
    
 }
