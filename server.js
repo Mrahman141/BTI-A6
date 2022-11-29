@@ -18,7 +18,7 @@ var path = require("path");
 const fs = require('node:fs');
 
 
-
+var dataServiceAuth = require("./data-service-auth");
 var data_service = require("./data-service");
 
 app.use(express.json());
@@ -295,7 +295,22 @@ app.post("/department/update", (req, res) => {
 
 // setup http server to listen on HTTP_PORT
 data_service.initialize().then(()=>{
-    app.listen(HTTP_PORT, onHttpStart);
+    console.log("Test");
+    dataServiceAuth.initialize().then(()=>{
+        app.listen(HTTP_PORT, onHttpStart);
+    }).catch((err)=>{
+        console.log("unable to start server: " + err);
+    });
   }).catch((mesg)=>{
     console.log(mesg);
   });
+
+// data_service.initialize()
+// .then(dataServiceAuth.initialize)
+// .then(function(){
+// app.listen(HTTP_PORT, function(){
+// console.log("app listening on: " + HTTP_PORT)
+// });
+// }).catch(function(err){
+// console.log("unable to start server: " + err);
+// });
