@@ -2,8 +2,8 @@
  * BTI325– Assignment 6 * I declare that this assignment is my own work in accordance with Seneca Academic Policy. No part * 
  * of this assignment has been copied manually or electronically from any other source * 
  * (including 3rd party web sites) or distributed to other students. * 
- * Name: Mohammed Aminoor Rahman Student ID: 166562215 Date: October 20th, 2022 * 
- * Your app’s URL (from HEROKU) :   https://dizzy-bear-capris.cyclic.app/* 
+ * Name: Mohammed Aminoor Rahman Student ID: 166562215 Date: December 1st, 2022 * 
+ * Your app’s URL (from Cyclic) :   https://dizzy-bear-capris.cyclic.app/ * 
  **************************************************************************/
 
 
